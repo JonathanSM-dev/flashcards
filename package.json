@@ -22,7 +22,7 @@
     "postcss": "^8.4.21",
     "tailwindcss": "^3.3.0"
   },
-  "homepage": "https://JonathanSM-dev.github.io/flashcards",
+  "homepage": "https://jonathansm-dev.github.io/flashcards",
   "scripts": {
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
