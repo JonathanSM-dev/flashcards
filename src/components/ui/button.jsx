@@ -8,11 +8,11 @@ const Button = React.forwardRef(
 
     const variants = {
       default:
-        "bg-purple-600 text-white hover:bg-purple-700 dark:bg-dark-primary dark:text-white dark:hover:bg-dark-primary/90",
+        "bg-purple-600 text-white hover:bg-purple-700 dark:bg-purple-600 dark:text-white dark:hover:bg-purple-700",
       outline:
-        "border border-gray-300 text-gray-700 hover:bg-gray-100 dark:border-dark-border dark:text-dark-text-primary dark:hover:bg-dark-card",
+        "border border-gray-300 text-gray-700 hover:bg-gray-100 dark:border-gray-300 dark:text-gray-200 dark:hover:bg-gray-700",
       disabled:
-        "bg-gray-200 text-gray-400 cursor-not-allowed dark:bg-dark-surface dark:text-dark-text-muted",
+        "bg-gray-200 text-gray-400 cursor-not-allowed dark:bg-gray-700 dark:text-gray-500",
     };
 
     const sizes = {
