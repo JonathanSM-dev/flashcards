@@ -3,6 +3,7 @@ module.exports = {
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
@@ -16,10 +17,6 @@ module.exports = {
           foreground: "hsl(210 40% 98%)",
         },
         secondary: {
-          DEFAULT: "hsl(210 40% 96.1%)",
-          foreground: "hsl(222.2 47.4% 11.2%)",
-        },
-        accent: {
           DEFAULT: "hsl(210 40% 96.1%)",
           foreground: "hsl(222.2 47.4% 11.2%)",
         },

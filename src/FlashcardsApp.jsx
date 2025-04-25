@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Card, CardContent } from "./components/ui/card";
 import { Button } from "./components/ui/button";
+import ThemeToggle from "./components/ui/ThemeToggle";
 
 const flashcards = [
   { question: "O que são dados?", answer: "Representações brutas de fatos, como números, nomes ou imagens, que sozinhos não têm significado." },
@@ -42,21 +43,42 @@ export default function FlashcardsApp() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center gap-4 p-4">
-      <Card className="w-full max-w-xl text-center shadow-xl">
+    <div className="min-h-screen flex flex-col items-center justify-center gap-4 p-4 bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-200">
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
+      
+      <Card className="w-full max-w-xl text-center shadow-xl bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
         <CardContent className="p-6">
-          <h2 className="text-xl font-semibold mb-4">{flashcards[index].question}</h2>
-          {showAnswer && <p className="text-base text-gray-700">{flashcards[index].answer}</p>}
+          <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-100">{flashcards[index].question}</h2>
+          {showAnswer && <p className="text-base text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700 p-4 rounded-md">{flashcards[index].answer}</p>}
         </CardContent>
       </Card>
+      
       <div className="flex gap-4">
-        <Button variant="outline" onClick={prev}>Anterior</Button>
-        <Button onClick={() => setShowAnswer(!showAnswer)}>
+        <Button 
+          variant="outline" 
+          onClick={prev}
+          className="border-gray-300 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700"
+        >
+          Anterior
+        </Button>
+        <Button 
+          onClick={() => setShowAnswer(!showAnswer)}
+          className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-800 dark:hover:bg-blue-700 text-white"
+        >
           {showAnswer ? "Ocultar Resposta" : "Mostrar Resposta"}
         </Button>
-        <Button variant="outline" onClick={next}>Próximo</Button>
+        <Button 
+          variant="outline" 
+          onClick={next}
+          className="border-gray-300 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700"
+        >
+          Próximo
+        </Button>
       </div>
-      <p className="text-sm text-gray-500 mt-2">
+      
+      <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
         Flashcard {index + 1} de {flashcards.length}
       </p>
     </div>
