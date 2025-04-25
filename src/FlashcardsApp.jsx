@@ -60,14 +60,14 @@ export default function FlashcardsApp() {
       </Card>
       
       <div className="flex gap-4">
-        <Button variant="outline" onClick={prev}>
-          Anterior
+        <Button variant="outline" onClick={prev} disabled={index === 0}>
+            Anterior
         </Button>
         <Button onClick={() => setShowAnswer(!showAnswer)}>
-          {showAnswer ? "Ocultar Resposta" : "Mostrar Resposta"}
+            {showAnswer ? "Ocultar Resposta" : "Mostrar Resposta"}
         </Button>
-        <Button variant="outline" onClick={next}>
-          Próximo
+        <Button variant="outline" onClick={next} disabled={index === flashcards.length - 1}>
+            Próximo
         </Button>
       </div>
       
