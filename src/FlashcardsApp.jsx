@@ -30,37 +30,58 @@ const flashcards = [
 
 export default function FlashcardsApp() {
   const [index, setIndex] = useState(0);
-  const [showAnswer, setShowAnswer] = useState(false);
-  const [isRandomMode, setIsRandomMode] = useState(false);
-  const [shuffledFlashcards, setShuffledFlashcards] = useState([...flashcards]);
+  const [isQuizMode, setIsQuizMode] = useState(false);
+  const [quizResults, setQuizResults] = useState({ correct: 0, incorrect: 0 });
+  const [quizCompleted, setQuizCompleted] = useState(false);
+  const [options, setOptions] = useState([]);
 
-  // Função para embaralhar as questões
-  const shuffleFlashcards = () => {
-    const shuffled = [...flashcards].sort(() => Math.random() - 0.5);
-    setShuffledFlashcards(shuffled);
-    setIndex(0); // Reinicia o índice
+  // Função para embaralhar um array
+  const shuffleArray = (array) => array.sort(() => Math.random() - 0.5);
+
+  // Gerar opções de resposta para o modo prova
+  const generateOptions = () => {
+    const correctAnswer = flashcards[index].answer;
+    const incorrectAnswers = flashcards
+      .filter((_, i) => i !== index) // Exclui a resposta correta
+      .map((card) => card.answer);
+    const randomIncorrectAnswers = shuffleArray(incorrectAnswers).slice(0, 3); // Seleciona 3 respostas erradas
+    const allOptions = shuffleArray([correctAnswer, ...randomIncorrectAnswers]); // Embaralha as opções
+    setOptions(allOptions);
   };
 
-  // Alternar entre modo normal e aleatório
-  const toggleRandomMode = () => {
-    if (!isRandomMode) {
-      shuffleFlashcards();
+  // Alternar para o modo prova
+  const startQuizMode = () => {
+    setIsQuizMode(true);
+    setQuizResults({ correct: 0, incorrect: 0 });
+    setQuizCompleted(false);
+    setIndex(0);
+    generateOptions();
+  };
+
+  // Verificar a resposta do usuário
+  const handleAnswer = (selectedOption) => {
+    const correctAnswer = flashcards[index].answer;
+    if (selectedOption === correctAnswer) {
+      setQuizResults((prev) => ({ ...prev, correct: prev.correct + 1 }));
     } else {
-      setShuffledFlashcards([...flashcards]); // Volta ao modo normal
-      setIndex(0); // Reinicia o índice
+      setQuizResults((prev) => ({ ...prev, incorrect: prev.incorrect + 1 }));
     }
-    setIsRandomMode(!isRandomMode);
-    setShowAnswer(false); // Oculta a resposta ao alternar
+
+    // Avançar para a próxima questão ou finalizar o quiz
+    if (index + 1 < flashcards.length) {
+      setIndex((prev) => prev + 1);
+      generateOptions();
+    } else {
+      setQuizCompleted(true);
+    }
   };
 
-  const next = () => {
-    setShowAnswer(false);
-    setIndex((prev) => (prev + 1) % shuffledFlashcards.length);
-  };
-
-  const prev = () => {
-    setShowAnswer(false);
-    setIndex((prev) => (prev - 1 + shuffledFlashcards.length) % shuffledFlashcards.length);
+  // Sair do modo prova
+  const exitQuizMode = () => {
+    setIsQuizMode(false);
+    setQuizResults({ correct: 0, incorrect: 0 });
+    setQuizCompleted(false);
+    setIndex(0);
   };
 
   return (
@@ -69,38 +90,59 @@ export default function FlashcardsApp() {
         <ThemeToggle />
       </div>
 
-      <Card className="w-full max-w-xl text-center shadow-xl">
-        <CardContent className="p-6">
-          <h2 className="text-xl font-semibold mb-4">{shuffledFlashcards[index].question}</h2>
-          {showAnswer && (
-            <p className="text-base p-4 rounded-md bg-gray-50 text-gray-700 dark:bg-dark-surface dark:text-dark-text-secondary">
-              {shuffledFlashcards[index].answer}
-            </p>
-          )}
-        </CardContent>
-      </Card>
+      {!isQuizMode && (
+        <>
+          <Card className="w-full max-w-xl text-center shadow-xl">
+            <CardContent className="p-6">
+              <h2 className="text-xl font-semibold mb-4">{flashcards[index].question}</h2>
+              <p className="text-base p-4 rounded-md bg-gray-50 text-gray-700 dark:bg-dark-surface dark:text-dark-text-secondary">
+                {flashcards[index].answer}
+              </p>
+            </CardContent>
+          </Card>
 
-      <div className="flex gap-4">
-        <Button variant="outline" onClick={prev} disabled={index === 0}>
-          Anterior
-        </Button>
-        <Button onClick={() => setShowAnswer(!showAnswer)}>
-          {showAnswer ? "Ocultar Resposta" : "Mostrar Resposta"}
-        </Button>
-        <Button variant="outline" onClick={next} disabled={index === shuffledFlashcards.length - 1}>
-          Próximo
-        </Button>
-      </div>
+          <div className="flex gap-4">
+            <Button variant="outline" onClick={() => setIndex((prev) => (prev - 1 + flashcards.length) % flashcards.length)}>
+              Anterior
+            </Button>
+            <Button variant="outline" onClick={() => setIndex((prev) => (prev + 1) % flashcards.length)}>
+              Próximo
+            </Button>
+          </div>
 
-      <div className="mt-4">
-        <Button variant="default" onClick={toggleRandomMode}>
-          {isRandomMode ? "Desativar Modo Aleatório" : "Ativar Modo Aleatório"}
-        </Button>
-      </div>
+          <Button variant="default" onClick={startQuizMode}>
+            Iniciar Modo Prova
+          </Button>
+        </>
+      )}
 
-      <p className="text-sm text-gray-500 dark:text-dark-text-muted mt-2">
-        Flashcard {index + 1} de {shuffledFlashcards.length}
-      </p>
+      {isQuizMode && !quizCompleted && (
+        <>
+          <Card className="w-full max-w-xl text-center shadow-xl">
+            <CardContent className="p-6">
+              <h2 className="text-xl font-semibold mb-4">{flashcards[index].question}</h2>
+              <div className="flex flex-col gap-2">
+                {options.map((option, i) => (
+                  <Button key={i} variant="outline" onClick={() => handleAnswer(option)}>
+                    {option}
+                  </Button>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </>
+      )}
+
+      {quizCompleted && (
+        <div className="text-center">
+          <h2 className="text-2xl font-bold">Resultados do Quiz</h2>
+          <p className="text-lg">Acertos: {quizResults.correct}</p>
+          <p className="text-lg">Erros: {quizResults.incorrect}</p>
+          <Button variant="default" onClick={exitQuizMode}>
+            Sair do Modo Prova
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
