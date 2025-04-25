@@ -31,15 +31,36 @@ const flashcards = [
 export default function FlashcardsApp() {
   const [index, setIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
+  const [isRandomMode, setIsRandomMode] = useState(false);
+  const [shuffledFlashcards, setShuffledFlashcards] = useState([...flashcards]);
+
+  // Função para embaralhar as questões
+  const shuffleFlashcards = () => {
+    const shuffled = [...flashcards].sort(() => Math.random() - 0.5);
+    setShuffledFlashcards(shuffled);
+    setIndex(0); // Reinicia o índice
+  };
+
+  // Alternar entre modo normal e aleatório
+  const toggleRandomMode = () => {
+    if (!isRandomMode) {
+      shuffleFlashcards();
+    } else {
+      setShuffledFlashcards([...flashcards]); // Volta ao modo normal
+      setIndex(0); // Reinicia o índice
+    }
+    setIsRandomMode(!isRandomMode);
+    setShowAnswer(false); // Oculta a resposta ao alternar
+  };
 
   const next = () => {
     setShowAnswer(false);
-    setIndex((prev) => (prev + 1) % flashcards.length);
+    setIndex((prev) => (prev + 1) % shuffledFlashcards.length);
   };
 
   const prev = () => {
     setShowAnswer(false);
-    setIndex((prev) => (prev - 1 + flashcards.length) % flashcards.length);
+    setIndex((prev) => (prev - 1 + shuffledFlashcards.length) % shuffledFlashcards.length);
   };
 
   return (
@@ -47,32 +68,38 @@ export default function FlashcardsApp() {
       <div className="absolute top-4 right-4">
         <ThemeToggle />
       </div>
-      
+
       <Card className="w-full max-w-xl text-center shadow-xl">
         <CardContent className="p-6">
-          <h2 className="text-xl font-semibold mb-4">{flashcards[index].question}</h2>
+          <h2 className="text-xl font-semibold mb-4">{shuffledFlashcards[index].question}</h2>
           {showAnswer && (
             <p className="text-base p-4 rounded-md bg-gray-50 text-gray-700 dark:bg-dark-surface dark:text-dark-text-secondary">
-              {flashcards[index].answer}
+              {shuffledFlashcards[index].answer}
             </p>
           )}
         </CardContent>
       </Card>
-      
+
       <div className="flex gap-4">
         <Button variant="outline" onClick={prev} disabled={index === 0}>
-            Anterior
+          Anterior
         </Button>
         <Button onClick={() => setShowAnswer(!showAnswer)}>
-            {showAnswer ? "Ocultar Resposta" : "Mostrar Resposta"}
+          {showAnswer ? "Ocultar Resposta" : "Mostrar Resposta"}
         </Button>
-        <Button variant="outline" onClick={next} disabled={index === flashcards.length - 1}>
-            Próximo
+        <Button variant="outline" onClick={next} disabled={index === shuffledFlashcards.length - 1}>
+          Próximo
         </Button>
       </div>
-      
+
+      <div className="mt-4">
+        <Button variant="default" onClick={toggleRandomMode}>
+          {isRandomMode ? "Desativar Modo Aleatório" : "Ativar Modo Aleatório"}
+        </Button>
+      </div>
+
       <p className="text-sm text-gray-500 dark:text-dark-text-muted mt-2">
-        Flashcard {index + 1} de {flashcards.length}
+        Flashcard {index + 1} de {shuffledFlashcards.length}
       </p>
     </div>
   );
