@@ -24,8 +24,8 @@
   },
   "homepage": "https://jonathansm-dev.github.io/flashcards",
   "scripts": {
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
+    "predp": "npm run build",
+    "dp": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
