@@ -111,18 +111,20 @@ export default function FlashcardsApp() {
   const [quizResults, setQuizResults] = useState({ correct: 0, incorrect: 0 });
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [options, setOptions] = useState([]);
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [isCorrect, setIsCorrect] = useState(null);
 
   // Função para embaralhar um array
   const shuffleArray = (array) => array.sort(() => Math.random() - 0.5);
 
   // Função para gerar opções de resposta para o modo prova
   const generateOptions = (currentIndex) => {
-    const correctAnswer = flashcards[currentIndex].answer; // Use o índice atual passado como argumento
+    const correctAnswer = flashcards[currentIndex].answer;
     const incorrectAnswers = flashcards
-      .filter((_, i) => i !== currentIndex) // Exclui a resposta correta
+      .filter((_, i) => i !== currentIndex)
       .map((card) => card.answer);
-    const randomIncorrectAnswers = shuffleArray(incorrectAnswers).slice(0, 3); // Seleciona 3 respostas erradas
-    const allOptions = shuffleArray([correctAnswer, ...randomIncorrectAnswers]); // Embaralha as opções
+    const randomIncorrectAnswers = shuffleArray(incorrectAnswers).slice(0, 3);
+    const allOptions = shuffleArray([correctAnswer, ...randomIncorrectAnswers]);
     setOptions(allOptions);
   };
 
@@ -138,29 +140,36 @@ export default function FlashcardsApp() {
   // Verificar a resposta do usuário
   const handleAnswer = (selectedOption) => {
     const correctAnswer = flashcards[index].answer;
-    if (selectedOption === correctAnswer) {
+    setSelectedOption(selectedOption);
+    const isCorrectAnswer = selectedOption === correctAnswer;
+    setIsCorrect(isCorrectAnswer);
+
+    if (isCorrectAnswer) {
       setQuizResults((prev) => ({ ...prev, correct: prev.correct + 1 }));
     } else {
       setQuizResults((prev) => ({ ...prev, incorrect: prev.incorrect + 1 }));
     }
 
-    // Avançar para a próxima questão ou finalizar o quiz
-    if (index + 1 < flashcards.length) {
-      const nextIndex = index + 1;
-      setIndex(nextIndex);
-      generateOptions(nextIndex); // Gera opções para a próxima questão
-    } else {
-      setQuizCompleted(true);
-    }
+    // Avançar para a próxima questão após 2 segundos
+    setTimeout(() => {
+      setSelectedOption(null);
+      setIsCorrect(null);
+      if (index + 1 < flashcards.length) {
+        const nextIndex = index + 1;
+        setIndex(nextIndex);
+        generateOptions(nextIndex);
+      } else {
+        setQuizCompleted(true);
+      }
+    }, 2000);
   };
 
-  // Sair do modo prova
+  // Função para sair do modo prova
   const exitQuizMode = () => {
     setIsQuizMode(false);
-    setQuizResults({ correct: 0, incorrect: 0 });
     setQuizCompleted(false);
     setIndex(0);
-    setShowAnswer(false); // Oculta a resposta ao sair do modo prova
+    setShowAnswer(false);
   };
 
   return (
@@ -177,62 +186,78 @@ export default function FlashcardsApp() {
                 {flashcards[index].question}
               </h2>
               {showAnswer && (
-                <p className="text-base p-4 rounded-md bg-gray-50 text-gray-700 dark:bg-dark-surface dark:text-dark-text-secondary">
-                  {flashcards[index].answer}
-                </p>
+                <p className="mt-4 text-lg">{flashcards[index].answer}</p>
               )}
             </CardContent>
           </Card>
 
-          <div className="flex gap-4">
+          <div className="flex flex-wrap gap-2 justify-center">
             <Button
               variant="outline"
-              onClick={() =>
-                setIndex(
-                  (prev) => (prev - 1 + flashcards.length) % flashcards.length
-                )
-              }
+              onClick={() => setShowAnswer(!showAnswer)}
+            >
+              {showAnswer ? "Esconder Resposta" : "Mostrar Resposta"}
+            </Button>
+
+            <Button
+              variant="outline"
+              onClick={() => {
+                setIndex(Math.max(0, index - 1));
+                setShowAnswer(false);
+              }}
+              disabled={index === 0}
             >
               Anterior
             </Button>
-            <Button onClick={() => setShowAnswer(!showAnswer)}>
-              {showAnswer ? "Ocultar Resposta" : "Mostrar Resposta"}
-            </Button>
+
             <Button
               variant="outline"
-              onClick={() => setIndex((prev) => (prev + 1) % flashcards.length)}
+              onClick={() => {
+                setIndex(Math.min(flashcards.length - 1, index + 1));
+                setShowAnswer(false);
+              }}
+              disabled={index === flashcards.length - 1}
             >
               Próximo
             </Button>
-          </div>
 
-          <Button variant="default" onClick={startQuizMode}>
-            Iniciar Modo Prova
-          </Button>
+            <Button variant="default" onClick={startQuizMode}>
+              Modo Prova
+            </Button>
+          </div>
         </>
       )}
 
-{isQuizMode && !quizCompleted && (
-  <>
-    <Card className="w-full max-w-xl text-center shadow-xl">
-      <CardContent className="p-6">
-        <h2 className="text-xl font-semibold mb-4">{flashcards[index].question}</h2>
-        <div className="flex flex-col gap-2">
-          {options.map((option, i) => (
-            <Button
-              key={i}
-              variant="outline"
-              onClick={() => handleAnswer(option)}
-              className="text-left px-4 py-3 md:text-center" // Alinhamento à esquerda em mobile, centralizado em desktop
-            >
-              {option}
-            </Button>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
-  </>
-)}
+      {isQuizMode && !quizCompleted && (
+        <>
+          <Card className="w-full max-w-xl text-center shadow-xl">
+            <CardContent className="p-6">
+              <h2 className="text-xl font-semibold mb-4">
+                {flashcards[index].question}
+              </h2>
+              <div className="flex flex-col gap-2">
+                {options.map((option, i) => (
+                  <Button
+                    key={i}
+                    variant="outline"
+                    onClick={() => handleAnswer(option)}
+                    className={`text-left px-4 py-3 md:text-center ${
+                      selectedOption === option
+                        ? isCorrect
+                          ? "bg-green-500 text-white"
+                          : "bg-red-500 text-white"
+                        : ""
+                    }`}
+                    disabled={selectedOption !== null} // Desabilitar botões após seleção
+                  >
+                    {option}
+                  </Button>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </>
+      )}
 
       {quizCompleted && (
         <div className="text-center">
