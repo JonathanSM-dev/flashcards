@@ -6,103 +6,134 @@ import ThemeToggle from "./components/ui/ThemeToggle";
 const flashcards = [
   {
     question: "O que são dados?",
-    answer:
-      "Representações brutas de fatos, como números, nomes ou imagens, que sozinhos não têm significado.",
+    answer: "Dados são representações brutas de fatos, como números, nomes, imagens ou medições, que sozinhos não transmitem significado. Eles são a matéria-prima para a geração de informações.",
   },
   {
     question: "O que é informação?",
-    answer:
-      "Resultado da análise ou processamento dos dados, fornecendo contexto e significado.",
+    answer: "Informação é o resultado da análise, processamento ou combinação de dados, fornecendo significado, contexto e utilidade para tomada de decisões.",
   },
   {
     question: "O que é um banco de dados?",
-    answer:
-      "Coleção organizada de dados persistentes, usados para armazenar e recuperar informações.",
+    answer: "Um banco de dados é uma coleção organizada de dados persistentes, estruturados para permitir armazenamento, consulta, manipulação e recuperação eficientes de informações.",
   },
   {
     question: "O que é um SGBD?",
-    answer:
-      "Sistema de Gerenciamento de Banco de Dados, software que manipula e controla o acesso aos dados.",
+    answer: "Sistema de Gerenciamento de Banco de Dados (SGBD) é o software responsável por criar, gerenciar, armazenar, consultar e proteger os dados em um banco de dados de maneira eficiente e segura.",
   },
   {
     question: "Quais os níveis de abstração de um BD?",
-    answer:
-      "Conceitual (significado dos dados), Lógico (estrutura relacional) e Físico (armazenamento).",
+    answer: "Os níveis de abstração são: Conceitual (foca no significado dos dados), Lógico (organiza dados e seus relacionamentos) e Físico (detalha como os dados são armazenados no sistema).",
   },
   {
     question: "O que é uma transação?",
-    answer:
-      "Conjunto de operações que realizam uma função lógica completa no banco de dados.",
+    answer: "Transação é uma sequência de operações em um banco de dados que juntas formam uma tarefa lógica completa, como uma transferência bancária, respeitando propriedades de integridade.",
   },
   {
     question: "O que significa ACID?",
-    answer:
-      "Conjunto de propriedades das transações: Atomicidade, Consistência, Isolamento e Durabilidade.",
+    answer: "ACID é um conjunto de propriedades fundamentais das transações: Atomicidade, Consistência, Isolamento e Durabilidade, que garantem a confiabilidade e integridade dos dados.",
   },
   {
     question: "Defina Atomicidade",
-    answer:
-      "Transações são indivisíveis: ou ocorrem completamente ou não ocorrem.",
+    answer: "Atomicidade garante que todas as operações de uma transação sejam realizadas completamente ou, em caso de falha, nenhuma operação tenha efeito.",
   },
   {
     question: "Defina Consistência",
-    answer: "Transações mantêm o banco de dados em um estado válido.",
+    answer: "Consistência assegura que o banco de dados passe de um estado válido para outro também válido após a conclusão de uma transação.",
   },
   {
     question: "Defina Isolamento",
-    answer: "Transações simultâneas não interferem entre si.",
+    answer: "Isolamento garante que a execução simultânea de múltiplas transações ocorra de forma independente, sem que uma interfira no resultado da outra.",
   },
   {
     question: "Defina Durabilidade",
-    answer: "Transações concluídas permanecem no banco mesmo após falhas.",
+    answer: "Durabilidade assegura que uma vez confirmada, a transação terá seus efeitos permanentemente gravados no banco, mesmo diante de falhas ou quedas de energia.",
   },
   {
     question: "O que é uma entidade?",
-    answer:
-      "Objeto do mundo real representado no banco, como Pessoa ou Produto.",
+    answer: "Uma entidade é qualquer objeto ou conceito do mundo real que pode ser representado e armazenado no banco de dados, como uma Pessoa, Produto ou Evento.",
   },
   {
     question: "O que é uma entidade forte?",
-    answer: "Entidade que existe independentemente de outras.",
+    answer: "Entidade forte é aquela que existe independentemente de outras entidades e possui seu próprio atributo identificador único.",
   },
   {
     question: "O que é uma entidade fraca?",
-    answer: "Entidade que depende de outra para existir.",
+    answer: "Entidade fraca é aquela que depende de uma entidade forte para existir e para ser identificada, geralmente possuindo uma chave parcial.",
   },
   {
     question: "O que é um relacionamento?",
-    answer: "Associação entre duas ou mais entidades.",
+    answer: "Relacionamento é a associação lógica entre duas ou mais entidades, representando como elas se interagem no contexto do banco de dados.",
   },
   {
     question: "O que é um relacionamento identificador?",
-    answer: "Relacionamento entre entidade forte e entidade fraca.",
+    answer: "Relacionamento identificador ocorre quando uma entidade fraca depende de uma entidade forte para sua identificação, reforçando seu vínculo de existência.",
   },
   {
     question: "O que é cardinalidade?",
-    answer: "Define o número de ocorrências entre entidades (1:1, 1:N, N:N).",
+    answer: "Cardinalidade define o número mínimo e máximo de associações entre entidades, podendo ser 1:1, 1:N ou N:N em um relacionamento.",
   },
   {
     question: "O que é um atributo?",
-    answer: "Característica de uma entidade ou relacionamento.",
+    answer: "Atributo é uma característica ou propriedade que descreve uma entidade ou um relacionamento, como 'nome', 'data de nascimento' ou 'preço'.",
   },
   {
     question: "O que é um atributo identificador?",
-    answer: "Atributo que diferencia cada ocorrência (ex: id, RA).",
+    answer: "Atributo identificador é aquele que distingue de forma única cada ocorrência de uma entidade, como um CPF, RA ou número de matrícula.",
   },
   {
     question: "O que é um atributo composto?",
-    answer: "Atributo formado por subatributos (ex: endereço → rua, cidade).",
+    answer: "Atributo composto é aquele formado por vários subatributos que juntos detalham melhor uma informação, como um endereço dividido em rua, cidade e CEP.",
   },
   {
     question: "O que é um atributo multivalorado?",
-    answer: "Atributo que pode ter vários valores (ex: telefone).",
+    answer: "Atributo multivalorado é aquele que pode ter vários valores para uma mesma entidade, como vários telefones para uma única pessoa.",
   },
   {
     question: "O que é generalização e especialização?",
-    answer:
-      "Relação entre entidade genérica e suas versões específicas (Pessoa → Aluno, Professor).",
+    answer: "Generalização agrupa entidades específicas em uma entidade genérica, enquanto especialização cria novas entidades mais específicas a partir de uma entidade genérica.",
+  },
+  {
+    question: "O que são dados persistentes?",
+    answer: "Dados persistentes são aqueles que continuam existindo e armazenados após o fim da aplicação ou sessão, até que sejam explicitamente removidos.",
+  },
+  {
+    question: "O que é um esquema de banco de dados?",
+    answer: "Esquema é a estrutura formal que define a organização dos dados, como tabelas, campos e relacionamentos, sendo o projeto lógico do banco de dados.",
+  },
+  {
+    question: "O que é uma instância de banco de dados?",
+    answer: "Instância é o conjunto atual de dados armazenados em um banco de dados em um determinado momento, podendo mudar conforme operações de inserção, atualização ou remoção.",
+  },
+  {
+    question: "O que é um modelo de dados?",
+    answer: "Modelo de dados é um conjunto de ferramentas conceituais utilizadas para descrever a estrutura dos dados, suas relações e restrições de integridade.",
+  },
+  {
+    question: "Qual a diferença entre modelo conceitual, lógico e físico?",
+    answer: "O modelo conceitual representa a visão de alto nível (significado dos dados), o modelo lógico organiza os dados para sistemas de SGBD, e o modelo físico descreve como os dados são armazenados fisicamente.",
+  },
+  {
+    question: "O que é um relacionamento ternário?",
+    answer: "Relacionamento ternário é uma associação que envolve simultaneamente três diferentes entidades, como a relação entre um aluno, uma disciplina e um professor.",
+  },
+  {
+    question: "O que é um auto-relacionamento?",
+    answer: "Auto-relacionamento é quando uma entidade se relaciona consigo mesma, como funcionários que chefiam outros funcionários na mesma tabela.",
+  },
+  {
+    question: "Qual é a função do controle de concorrência em SGBDs?",
+    answer: "O controle de concorrência assegura que múltiplas transações simultâneas no banco de dados sejam executadas corretamente, preservando a consistência e evitando conflitos.",
+  },
+  {
+    question: "Qual a origem da palavra 'banco' no termo Banco de Dados?",
+    answer: "A palavra 'banco' vem do germânico 'Banka' (mesa), usada na Itália para transações financeiras, e foi adaptada para significar o local de armazenamento de dados.",
+  },
+  {
+    question: "O que são atributos simples?",
+    answer: "Atributos simples são aqueles que armazenam apenas um valor atômico, indivisível, como CPF ou nome de uma pessoa.",
   },
 ];
+
 
 export default function FlashcardsApp() {
   const [index, setIndex] = useState(0);
