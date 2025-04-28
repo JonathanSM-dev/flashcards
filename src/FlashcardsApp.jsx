@@ -144,33 +144,45 @@ export default function FlashcardsApp() {
   const [options, setOptions] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
+  const [randomizedIndices, setRandomizedIndices] = useState([]); // Novo estado para armazenar índices aleatórios
+  const [quizIndex, setQuizIndex] = useState(0); // Novo estado para rastrear a posição no array de índices aleatórios
 
   // Função para embaralhar um array
   const shuffleArray = (array) => array.sort(() => Math.random() - 0.5);
 
   // Função para gerar opções de resposta para o modo prova
-  const generateOptions = (currentIndex) => {
-    const correctAnswer = flashcards[currentIndex].answer;
+  const generateOptions = (flashcardIndex) => {
+    const correctAnswer = flashcards[flashcardIndex].answer;
     const incorrectAnswers = flashcards
-      .filter((_, i) => i !== currentIndex)
+      .filter((_, i) => i !== flashcardIndex)
       .map((card) => card.answer);
     const randomIncorrectAnswers = shuffleArray(incorrectAnswers).slice(0, 3);
     const allOptions = shuffleArray([correctAnswer, ...randomIncorrectAnswers]);
     setOptions(allOptions);
   };
 
-  // Alternar para o modo prova
+  // Alternar para o modo prova com questões aleatórias
   const startQuizMode = () => {
     setIsQuizMode(true);
     setQuizResults({ correct: 0, incorrect: 0 });
     setQuizCompleted(false);
-    setIndex(0);
-    generateOptions(0);
+    
+    // Criar array de índices e embaralhá-lo
+    const indices = Array.from({ length: flashcards.length }, (_, i) => i);
+    const shuffledIndices = shuffleArray([...indices]);
+    setRandomizedIndices(shuffledIndices);
+    setQuizIndex(0);
+    
+    // Usar o primeiro índice aleatório para a primeira questão
+    generateOptions(shuffledIndices[0]);
   };
 
   // Verificar a resposta do usuário
   const handleAnswer = (selectedOption) => {
-    const correctAnswer = flashcards[index].answer;
+    // Obter o índice atual da flashcard sendo exibida no modo prova
+    const currentFlashcardIndex = randomizedIndices[quizIndex];
+    const correctAnswer = flashcards[currentFlashcardIndex].answer;
+    
     setSelectedOption(selectedOption);
     const isCorrectAnswer = selectedOption === correctAnswer;
     setIsCorrect(isCorrectAnswer);
@@ -185,10 +197,11 @@ export default function FlashcardsApp() {
     setTimeout(() => {
       setSelectedOption(null);
       setIsCorrect(null);
-      if (index + 1 < flashcards.length) {
-        const nextIndex = index + 1;
-        setIndex(nextIndex);
-        generateOptions(nextIndex);
+      
+      if (quizIndex + 1 < randomizedIndices.length) {
+        const nextQuizIndex = quizIndex + 1;
+        setQuizIndex(nextQuizIndex);
+        generateOptions(randomizedIndices[nextQuizIndex]);
       } else {
         setQuizCompleted(true);
       }
@@ -200,6 +213,7 @@ export default function FlashcardsApp() {
     setIsQuizMode(false);
     setQuizCompleted(false);
     setIndex(0);
+    setQuizIndex(0);
     setShowAnswer(false);
   };
 
@@ -264,7 +278,7 @@ export default function FlashcardsApp() {
           <Card className="w-full max-w-xl text-center shadow-xl">
             <CardContent className="p-6">
               <h2 className="text-xl font-semibold mb-4">
-                {flashcards[index].question}
+                {flashcards[randomizedIndices[quizIndex]].question}
               </h2>
               <div className="flex flex-col gap-2">
                 {options.map((option, i) => (
@@ -279,7 +293,7 @@ export default function FlashcardsApp() {
                           : "bg-red-500 text-white"
                         : ""
                     }`}
-                    disabled={selectedOption !== null} // Desabilitar botões após seleção
+                    disabled={selectedOption !== null}
                   >
                     {option}
                   </Button>
